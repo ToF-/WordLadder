@@ -13,13 +13,12 @@ adjacents ws = filter (\(_,as) -> not (null as))
                 $ map (\w -> (w, filter (adjacent w) ws)) ws
 
 ladder :: [String] -> String -> String -> [String]
-ladder ws start end = ladder' ads end [start] [start] 
+ladder ws start target = ladder' ads target [start] [start] 
     where
     ads = adjacents ws
+
+    ladder' :: [(String,[String])] -> String -> [String] -> [String] -> [String]
     ladder' _  _ [] _ = []
-    ladder' ads end (next:ns) (vs) | next == end = [end]
-                                | otherwise = case lookup next ads of
-                                     Nothing -> let l = ladder' ads end ns vs++[next]
-                                                in if null l then [] else [next] ++ l
-                                     Just ns' -> let l = ladder' ads end (ns ++ (ns'\\(ns++vs++[next]))) (vs++[next]) 
-                                                in if null l then [] else [next] ++ l
+    ladder' ads t (w:ws) (v:vs) | w == t = [v,w]
+    ladder' ads t (w:ws) (v:vs) = 
+        
