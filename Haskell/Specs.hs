@@ -2,7 +2,7 @@ import Test.Hspec
 import Adjacents
 
 main = hspec $ do
-    let ws = words "cog dog fog log cow bow bat"
+    let ws = words "dog fog fig fit fat cat cog cot bug"
     describe "adjacent" $ do
         it "is false if words are identical" $ do
             adjacent "foo" "foo"  `shouldBe` False
@@ -20,16 +20,24 @@ main = hspec $ do
     describe "adjacents" $ do
         it "given a list of words, yields all adjacents words" $ do
             adjacents ws  `shouldBe` 
-                [("cog",["dog","fog","log","cow"])
-                ,("dog",["cog","fog","log"])
-                ,("fog",["cog","dog","log"])
-                ,("log",["cog","dog","fog"])
-                ,("cow",["cog","bow"])
-                ,("bow",["cow"])]
+                [("dog",["fog","cog"])
+                ,("fog",["dog","fig","cog"])
+                ,("fig",["fog","fit"])
+                ,("fit",["fig","fat"])
+                ,("fat",["fit","cat"])
+                ,("cat",["fat","cot"])
+                ,("cog",["dog","fog","cot"])
+                ,("cot",["cat","cog"])]
+
+    describe "path" $ do
+        it "given a list of edges, yields a path" $ do
+            path "cat" [("cat",Just "cot")
+                       ,("fat",Just "fit")
+                       ,("cot",Just "cog")
+                       ,("cog",Just "dog")
+                       ,("dog",Nothing)]
+             `shouldBe` ["dog","cog","cot","cat"]
 
     describe "ladder" $ do
-        it "finds a 2 words ladder of adjacent words" $ do
-            ladder ws "cog" "dog" `shouldBe` ["cog","dog"] 
-            ladder ws "dog" "cog" `shouldBe` ["dog","cog"] 
-        it "finds a 3 words ladder of adjacent words" $ do
-            ladder ws "log" "cow" `shouldBe` ["log","cog","cow"] 
+        it "given a list of words a start and end, yields a path from start to end" $ do
+            ladder ws "dog" "cat" `shouldBe` ["dog","cog","cot","cat"]
