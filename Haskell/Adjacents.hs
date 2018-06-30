@@ -19,9 +19,12 @@ path t ps = case lookup t ps of
     Just (Just n) -> path n ps ++ [t]
 
 ladder :: [String] -> String -> String -> [String]
+ladder ws start end | length start /= length end = []
+ladder ws start end | not (start `elem` ws) || not (end `elem` ws) = []
 ladder ws start end = path end (ladder' (adjacents ws) end [(start,Nothing)] []) 
     where
     ladder' :: [(String,[String])] -> String -> [(String,Maybe String)] -> [(String, Maybe String)] -> [(String, Maybe String)]
+    ladder' adjs end [] _ = []
     ladder' adjs end (w:ws) vs | fst w == end = (w:vs)
     ladder' adjs end (w:ws) vs = case lookup (fst w) adjs of
         Nothing -> ladder' adjs end ws (w:vs)

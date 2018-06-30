@@ -40,4 +40,7 @@ main = hspec $ do
 
     describe "ladder" $ do
         it "given a list of words a start and end, yields a path from start to end" $ do
-            ladder ws "dog" "cat" `shouldBe` ["dog","cog","cot","cat"]
+            ladder ws "dog" "cat" `shouldBe` ["dog","fog","cog","cot","cat"]
+            ladder ws "dog" "bug" `shouldBe` []
+            ladder ws "dog" "to" `shouldBe` []
+            ladder ws "foo" "cat" `shouldBe` []
