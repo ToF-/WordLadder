@@ -1,6 +1,7 @@
 import Test.Hspec
 import Adjacents
 import Data.List
+import Data.Map as M (toList,fromList)
 
 ws = sort $ words "do dog fog fig fit fat cat cog cot bug bog bag bat"
 sp = words "dog cog cot cat"
@@ -22,7 +23,7 @@ main = hspec $ do
 
     describe "adjacents" $ do
         it "given a list of words, yields all adjacents words" $ do
-            adjacents ws  `shouldBe` 
+            M.toList (adjacents ws)  `shouldBe` 
                 [("bag",["bat","bog","bug"])
                 ,("bat",["bag","cat","fat"])
                 ,("bog",["bag","bug","cog","dog","fog"])
@@ -38,10 +39,10 @@ main = hspec $ do
 
     describe "path" $ do
         it "given a list of edges, yields a path" $ do
-            path "cat" [("cat",(3,Just "cot"))
-                       ,("cot",(2,Just "cog"))
-                       ,("cog",(1,Just "dog"))
-                       ,("dog",(0,Nothing))]
+            path "cat" (fromList ([("cat",(3,Just "cot"))
+                                  ,("cot",(2,Just "cog"))
+                                  ,("cog",(1,Just "dog"))
+                                  ,("dog",(0,Nothing))]))
              `shouldBe` ["dog","cog","cot","cat"]
 
     describe "ladder" $ do
