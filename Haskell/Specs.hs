@@ -2,9 +2,9 @@ import Test.Hspec
 import Adjacents
 import Data.List
 
+ws = sort $ words "do dog fog fig fit fat cat cog cot bug bog bag bat"
+sp = words "dog cog cot cat"
 main = hspec $ do
-    let ws = sort $ words "do dog fog fig fit fat cat cog cot bug bog bag bat"
-        sp = words "dog cog cot cat"
 
     describe "adjacent" $ do
         it "is false if words are identical" $ do
@@ -38,17 +38,19 @@ main = hspec $ do
 
     describe "path" $ do
         it "given a list of edges, yields a path" $ do
-            path "cat" [("cat",Just "cot")
-                       ,("fat",Just "fit")
-                       ,("cot",Just "cog")
-                       ,("cog",Just "dog")
-                       ,("dog",Nothing)]
+            path "cat" [("cat",(3,Just "cot"))
+                       ,("cot",(2,Just "cog"))
+                       ,("cog",(1,Just "dog"))
+                       ,("dog",(0,Nothing))]
              `shouldBe` ["dog","cog","cot","cat"]
 
     describe "ladder" $ do
         it "given two adjacent words, finds the ladder" $ do
             ladder ws "dog" "fog" `shouldBe` ["dog","fog"]
             ladder ws "cot" "cat" `shouldBe` ["cot","cat"]
+
+        it "given two equal words, finds nothing" $ do
+            ladder ws "dog" "dog" `shouldBe` []
 
         it "given two distant words, finds nothing" $ do
             ladder ws "dog" "bug" `shouldBe` []
@@ -63,4 +65,11 @@ main = hspec $ do
         it "given words at a distance of 2, finds the ladder" $ do
             ladder ws "dog" "fig" `shouldBe` ["dog","fog","fig"]
 
+        it "given words at a distance of 3, finds the ladder" $ do
+            ladder ws "dog" "fit" `shouldBe` ["dog","fog","fig","fit"]
+
+        it "always finds the shortest ladder" $ do
+            ladder ws "dog" "cat"  `shouldBe` ["dog","cog","cot","cat"]
+            ladder (ws\\["cot"]) "dog" "cat"  `shouldBe` ["dog","bog","bag","bat","cat"]
+            ladder (ws\\["cot","bag"]) "dog" "cat"  `shouldBe` ["dog","fog","fig","fit","fat","cat"]
         
