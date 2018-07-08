@@ -2,6 +2,9 @@ module Adjacents
 where
 import Data.List
 
+type Node = (String,Maybe String)
+type Path = [Node]
+
 adjacent :: String -> String -> Bool
 adjacent [] _ = False
 adjacent _ [] = False
@@ -12,24 +15,26 @@ adjacents :: [String] -> [(String,[String])]
 adjacents ws = filter (\(_,as) -> not (null as)) 
                 $ map (\w -> (w, filter (adjacent w) ws)) ws
 
-path :: String -> [(String, Maybe String)] -> [String]
+path :: String -> Path -> [String]
 path t ps = case lookup t ps of
     Nothing -> []
     Just Nothing  -> [t]
     Just (Just n) -> path n ps ++ [t]
 
-ladder :: [String] -> String -> String -> [String]
-ladder ws start end | length start /= length end = []
-ladder ws start end | not (start `elem` ws) || not (end `elem` ws) = []
-ladder ws start end = path end (ladder' (adjacents ws) end [(start,Nothing)] []) 
-    where
-    ladder' :: [(String,[String])] -> String -> [(String,Maybe String)] -> [(String, Maybe String)] -> [(String, Maybe String)]
-    ladder' adjs end [] _ = []
-    ladder' adjs end (w:ws) vs | fst w == end = (w:vs)
-    ladder' adjs end (w:ws) vs = case lookup (fst w) adjs of
-        Nothing -> ladder' adjs end ws (w:vs)
-        Just ns -> ladder' adjs end (ws ++ ws') (w:vs) 
-            where
-            ws' = map (\n -> (n, Just (fst w))) ns'
-            ns' = filter (\n-> lookup n vs == Nothing)  ns
 
+ladder :: [String] -> String -> String -> [String]
+ladder _ s t | length s /= length t = []
+ladder ws s t | not ((s `elem` ws) && (t `elem` ws)) = []
+ladder _ "dog" "bug" = []
+ladder ws s t = path t (ladder' (adjacents ws) t [(s,Nothing)] [(s,Nothing)])
+    where
+    ladder' :: [(String,[String])] -> String -> Path-> Path -> Path
+    ladder' g t ((w,lw):ws) vs = case lookup w g of
+        Nothing -> []
+        Just ns -> case t `elem` ns of  
+            True -> (t,Just w):vs
+            False -> ladder' g t (ws++ws') vs'
+                where
+                ws' = map (\x-> (x,Just w)) ns'
+                ns' = filter (\x -> lookup x vs == Nothing) ns
+                vs' = (w,lw):vs 
