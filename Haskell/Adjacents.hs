@@ -16,13 +16,12 @@ adjacent (a:as) (b:bs) | a /= b = as == bs
 adjacent (a:as) (b:bs) = adjacent as bs
 
 adjacents :: [String] -> Graph
-adjacents ws = fromList $ filter (\(_,as) -> not (null as)) 
-                $ map (\w -> (w, L.filter (adjacent w) ws)) ws
+adjacents ws = fromList $ map (\w -> (w, L.filter (adjacent w) ws)) ws
 
 
 ladders :: Graph -> String -> String -> [Path]
 ladders g s t = 
-    nub (sortBy (comparing length) (map reverse ((filter (elem t) ([[s]] >>= (search g (insert s empty) t))))))
+    nub (sortBy (comparing length) (map reverse (([[s]] >>= (search g (insert s empty) t)))))
 
 search :: Graph -> Set String -> String -> Path -> [Path]
 search g vs t (x:xs) | t == x = [(x:xs)] 
