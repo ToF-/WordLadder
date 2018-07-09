@@ -41,8 +41,14 @@ main = hspec $ do
     describe "ladders" $ do
         it "given a graph, a target, a list of path and a set of visited nodes, yields a list of paths" $ do
             let g = adjacents ws
-                i = [["dog"]]
-            ladders g "cog" i S.empty `shouldBe` [["cog","dog"]]
+            ladders g "dog" "cat" `shouldBe` 
+                [["dog","cog","cot","cat"]
+                ,["dog","bog","bag","bat","cat"]
+                ,["dog","fog","fig","fit","fat","cat"]]
 
+    describe "ladder" $ do
+        it "given a list of words and a start and target word, yields the shortest ladder" $ do
+            ladder ws "dog" "cat"  `shouldBe` 
+                ["dog","cog","cot","cat"]
 
 

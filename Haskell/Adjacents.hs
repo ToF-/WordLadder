@@ -1,8 +1,9 @@
 module Adjacents
 where
-import Data.List as L
-import Data.Map as M
-import Data.Set as S
+import Data.List as L (filter, null, map, foldr, reverse, dropWhile, sortBy, nub)
+import Data.Map as M (fromList, lookup, Map)
+import Data.Set as S (member, Set, insert, empty)
+import Data.Ord (comparing)
 
 type Graph = M.Map String [String]
 type Path  = [String]
@@ -15,15 +16,31 @@ adjacent (a:as) (b:bs) | a /= b = as == bs
 adjacent (a:as) (b:bs) = adjacent as bs
 
 adjacents :: [String] -> Graph
-adjacents ws = M.fromList $ L.filter (\(_,as) -> not (L.null as)) 
-                $ L.map (\w -> (w, L.filter (adjacent w) ws)) ws
+adjacents ws = fromList $ filter (\(_,as) -> not (null as)) 
+                $ map (\w -> (w, L.filter (adjacent w) ws)) ws
 
 
-ladders :: Graph -> String -> [Path] -> Set String -> [Path]
-ladders g t ps vs = L.filter (elem t) $ ps >>= search 
-    where 
-    search (x:xs) = L.map (\n-> (n:x:xs)) $  L.filter (\n -> not (S.member n vs)) (neighbors x g)
+ladders :: Graph -> String -> String -> [Path]
+ladders g s t = 
+    nub (sortBy (comparing length) (map reverse ((filter (elem t) ([[s]] >>= (search g (insert s empty) t))))))
 
-    neighbors x g = case M.lookup x g of
+search :: Graph -> Set String -> String -> Path -> [Path]
+search g vs t (x:xs) | t == x = [(x:xs)] 
+                     | otherwise = case neighbors of 
+    [] -> [(x:xs)]
+    ns -> (map (\n-> (n:x:xs)) ns) >>= (search g (L.foldr insert vs ns) t) 
+    where
+    neighbors = case M.lookup x g of
         Nothing -> []
-        Just ns -> ns
+        Just ns -> filter (\n -> not (member n vs)) ns
+
+ladder :: [String] -> String -> String -> [String] 
+ladder ws s t = reverse (
+        head (
+            sortBy (comparing length) (
+                    filter (elem t) (
+                        [[s]] >>= (search (adjacents ws) (insert s empty) t)
+                        )
+               )
+            )
+        )
