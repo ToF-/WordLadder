@@ -1,7 +1,8 @@
 import Test.Hspec
 import Ladder
 
-main = hspec $ do
+main = do 
+    hspec $ do
     describe "given a list of words" $ do
         let ws = words "BAG BAT BOG BUG CAT COG COT DOG DOT FOG QUX" 
         describe "ladder" $ do
@@ -16,6 +17,10 @@ main = hspec $ do
 
             it "gives nothing if the words are identical" $ do
                 ladder_ "DOG" "DOG" `shouldBe` ""
+
+            it "gives nothing if there is no possible ladder" $ do
+                ladder_ "DOG" "QUX" `shouldBe` ""
+        
 
                 
             

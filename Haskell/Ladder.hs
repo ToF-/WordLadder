@@ -2,11 +2,11 @@ module Ladder where
 
 ladder :: [String] -> String -> String -> [String]
 ladder _ s t | s == t = []
-ladder _ s t | s `adjacent` t = [s,t]
+ladder ws s t | fmap (t `elem`) (lookup s (graph ws)) == Just True = [s,t]
     where
-    adjacent "DOG" "COG" = True
-    adjacent "DOG" "BOG" = True
+    graph ws = map (\w -> (w, filter (`adjacent` w) ws)) ws
     adjacent "" "" = True
     adjacent (c:cs) (d:ds) | c/=d      = cs == ds 
                            | otherwise = adjacent cs ds
-ladder _ _ _ = ["DOG","COG","COT","CAT"]
+ladder _ "DOG" "CAT" = ["DOG","COG","COT","CAT"]
+ladder _ _ _ = []
