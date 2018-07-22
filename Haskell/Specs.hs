@@ -20,6 +20,9 @@ main = do
 
             it "gives nothing if there is no possible ladder" $ do
                 ladder_ "DOG" "QUX" `shouldBe` ""
+
+            it "gives nothing if the start word is not in the list" $ do
+                ladder_ "FOO" "FOG" `shouldBe` ""
         
 
                 
