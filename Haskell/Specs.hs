@@ -10,8 +10,8 @@ main = hspec $ do
                 ladder_ "DOG" "CAT" `shouldBe` "DOG COG COT CAT" 
 
             it "gives a 2 step ladder when the words are adjacent" $ do
-                ladder_ "DOG" "COG" `shouldBe` "DOG COG"
                 ladder_ "DOG" "BOG" `shouldBe` "DOG BOG"
+                ladder_ "DOG" "COG" `shouldBe` "DOG COG"
 
             it "gives nothing if the words are identical" $ do
                 ladder_ "DOG" "DOG" `shouldBe` ""
