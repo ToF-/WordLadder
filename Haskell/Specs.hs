@@ -9,5 +9,8 @@ main = hspec $ do
             it "gives the adjacent words between a source and a target" $ do
                 ladder_ "DOG" "CAT" `shouldBe` "DOG COG COT CAT" 
 
+            it "gives nothing if the words are identical" $ do
+                ladder_ "DOG" "DOG" `shouldBe` ""
+
                 
             
