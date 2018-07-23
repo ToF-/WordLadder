@@ -15,6 +15,9 @@ main = do
                 ladder_ "DOG" "COG" `shouldBe` "DOG COG"
                 ladder_ "BAG" "BAT" `shouldBe` "BAG BAT"
 
+            it "gives a 3 step ladder when each word is adjactent to the next" $ do
+                ladder_ "BUG" "DOG" `shouldBe` "BUG BOG DOG"
+
             it "gives nothing if the words are identical" $ do
                 ladder_ "DOG" "DOG" `shouldBe` ""
 
