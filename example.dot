@@ -1,0 +1,27 @@
+digraph example {
+"BAG" -> "BAT"[dir=none] ;
+"BAG" -> "BUG"[dir=none] ;
+"BAG" -> "DAG"[dir=none] ;
+
+"BAT" -> "CAT"[dir=none] ;
+"BAT" -> "FAT"[dir=none] ;
+
+"CAT" -> "COT"[dir=none] ;
+"CAT" -> "FAT"[dir=none] ;
+
+"COG" -> "COT"[dir=none] ;
+"COG" -> "DOG"[dir=none] ;
+"COG" -> "FOG"[dir=none] ;
+
+"DAG" -> "DOG"[dir=none] ;
+
+"DOG" -> "FOG"[dir=none] ;
+
+"FIG" -> "FOG"[dir=none] ;
+
+"FOG" -> "FOO"[dir=none] ;
+
+"QUX"
+
+
+}
