@@ -14,5 +14,8 @@ main = do
             it "should indicate an empty list for words with no adjacent words" $ do
                 lookup "QUX" g `shouldBe` Just []
 
+            it "should indicate a list of adjacent words for connected words" $ do
+                lookup "BAT" g `shouldBe` Just ["BAG","CAT", "FAT"]
+
                 
 
