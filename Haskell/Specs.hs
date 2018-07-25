@@ -4,29 +4,12 @@ import Ladder
 main = do 
     hspec $ do
     describe "given a list of words" $ do
-        let ws = words "BAG BAT BOG BUG CAT COG COT DOG DOT FOG QUX" 
-        describe "ladder" $ do
-            let ladder_ s t = unwords (ladder ws s t)
-            it "gives the adjacent words between a source and a target" $ do
-                ladder_ "DOG" "CAT" `shouldBe` "DOG COG COT CAT" 
+        let ws = words "BAG BOG BAT BUG CAT COG COT DOG FOG FIG FAT FOO QUX"
 
-            it "gives a 2 step ladder when the words are adjacent" $ do
-                ladder_ "DOG" "BOG" `shouldBe` "DOG BOG"
-                ladder_ "DOG" "COG" `shouldBe` "DOG COG"
-                ladder_ "BAG" "BAT" `shouldBe` "BAG BAT"
-
-            it "gives a 3 step ladder when each word is adjactent to the next" $ do
-                ladder_ "BUG" "DOG" `shouldBe` "BUG BOG DOG"
-
-            it "gives nothing if the words are identical" $ do
-                ladder_ "DOG" "DOG" `shouldBe` ""
-
-            it "gives nothing if there is no possible ladder" $ do
-                ladder_ "DOG" "QUX" `shouldBe` ""
-
-            it "gives nothing if the start word is not in the list" $ do
-                ladder_ "FOO" "FOG" `shouldBe` ""
-        
+        describe "a graph of adjacent words" $ do
+            let g = graph ws
+            it "should contain only the words from the list" $ do
+                lookup "BAR" g `shouldBe` Nothing
 
                 
-            
+
