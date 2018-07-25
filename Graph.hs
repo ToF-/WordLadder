@@ -1,21 +1,25 @@
 import Data.List
 
-ws = words "BAG BAT BUG CAT COG COT DOG DAG FOG FIG FAT FOO QUX"
+ws = words "BAG BOG BAT BUG CAT COG COT DOG FOG FIG FAT FOO QUX"
 
-gs = map (\w -> (w,filter (w `adjacent`) ws)) ws
+graph ws = map (\w -> (w,filter (w `adjacent`) ws)) ws
     where
     adjacent [] [] = False
     adjacent (c:cs) (d:ds) | c /= d = cs == ds
                            | otherwise = adjacent cs ds
 
-pp :: (String,[String]) -> String
-pp (w,ns) = unlines (map (pw w) ns)
-    where
-    pw :: String -> String -> String
-    pw s t = show s ++ " -> " ++ show t ++ "[dir=none] ;"
+edges :: (String,[String]) -> [(String,String)]
+edges (w,ns) = map (\n -> (w,n)) ns
 
-ss = sort (map (fmap sort) gs)
+pretty :: (String,String) -> String
+pretty (s,t) = show s ++ " -- " ++ show t ++ "[dir=none] ;"
+
+strict :: [(String, String)] -> [(String, String)]
+strict = filter (\(x,y) -> x < y)
+
+process = unlines . map pretty . strict . concatMap edges . map (fmap sort) . graph
+
 main = do
-    putStrLn "digraph example {"
-    putStrLn $ unlines $ map pp ss
+    putStrLn "strict graph example {"
+    putStrLn $ process ws
     putStrLn "}"
