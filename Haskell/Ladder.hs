@@ -3,5 +3,5 @@ module Ladder where
 type Graph = [(String,[String])]
 
 graph :: [String] -> Graph
-graph _ = []
+graph = map (\w -> (w,[]))
 

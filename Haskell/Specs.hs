@@ -10,6 +10,9 @@ main = do
             let g = graph ws
             it "should contain only the words from the list" $ do
                 lookup "BAR" g `shouldBe` Nothing
+            
+            it "should indicate an empty list for words with no adjacent words" $ do
+                lookup "QUX" g `shouldBe` Just []
 
                 
 
