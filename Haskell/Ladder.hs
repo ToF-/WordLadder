@@ -22,9 +22,11 @@ minus :: Queue -> Queue -> Queue
 minus q r = [(w,p) | (w,p) <- q, lookup w r == Nothing]
 
 path :: Queue -> String -> String -> [String]
+path q s _ | lookup s q == Nothing = []
 path q s t | s == t = [s]
            | otherwise = case lookup t q of
                 Just p -> path q s p ++ [t]
+                Nothing -> []
 
 search :: Graph -> Queue -> Queue -> Queue
 search g [] done = done
@@ -34,3 +36,6 @@ search g (edge:edges) done = search g (edges++(adjacents edge `minus` edges `min
     adjacents (w,_) = case lookup w g of
         Nothing -> []
         Just as -> map (\a -> (a,w)) as
+
+ladder :: [String] -> String -> String -> [String]
+ladder ws s t = path (search (graph ws) [(s,s)] []) s t

@@ -63,6 +63,12 @@ main = do
                 it "should continue until the end word is found" $ do
                     path q "DOG" "CAT" `shouldBe` ["DOG","COG","COT","CAT"]
 
+                it "should be empty if the starting word is not in the list" $ do
+                    path q "QUX" "CAT" `shouldBe` []
+
+                it "should be empty if the endiong word is not in the list" $ do
+                    path q "DOG" "QUX" `shouldBe` []
+
         describe "search" $ do
             describe "given a graph, a list of edges to traverse, a list of traversed edges" $ do
                 let g = graph ws
@@ -75,4 +81,19 @@ main = do
 
                 it "should explore the edges breadth first" $ do
                     search g [("DOG","DOG")] [] `shouldBe` q
+
+        describe "ladder, given a list of words" $ do
+            describe "when a ladder between two words is feasible" $ do
+                it "should find it" $ do
+                    ladder ws "DOG" "CAT" `shouldBe` ["DOG","COG","COT","CAT"]
+                    ladder ws "FIG" "CAT" `shouldBe` ["FIG","FOG","COG","COT","CAT"] 
+
+            describe "when the starting word is not in the list" $ do
+                it "should not find it" $ do
+                    ladder ws "QUX" "CAT" `shouldBe` []
+
+            describe "when the ending word is not in the list" $ do
+                it "should not find it" $ do
+                    ladder ws "DOG" "QUX" `shouldBe` []
+    
 
