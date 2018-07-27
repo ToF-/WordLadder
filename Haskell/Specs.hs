@@ -82,6 +82,20 @@ main = do
                 it "should explore the edges breadth first" $ do
                     search g [("DOG","DOG")] [] `shouldBe` q
 
+        describe "searchFor" $ do
+            describe "given a graph, a target word, a list of edges to traverse, a list of traversed edges" $ do
+
+                let g = graph ws
+                let q = [("CAT","COT"),("BAT","BAG"),("FOO","FOG")
+                        ,("FIG","FOG"),("COT","COG"),("BUG","BOG")
+                        ,("BAG","BOG"),("FOG","DOG"),("COG","DOG")
+                        ,("BOG","DOG"),("DOG","DOG")] 
+                it "should stop when there's not edges to traverse" $ do
+                    searchFor g "CAT" [] [("FOO","BAR")]  `shouldBe` [("FOO","BAR")] 
+
+                it "should explore the edges breadth first" $ do
+                    searchFor g "CAT" [("DOG","DOG")] [] `shouldBe` q
+
         describe "ladder, given a list of words" $ do
             describe "when a ladder between two words is feasible" $ do
                 it "should find it" $ do

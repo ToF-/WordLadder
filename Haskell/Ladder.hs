@@ -38,4 +38,15 @@ search g (edge:edges) done = search g (edges++(adjacents edge `minus` edges `min
         Just as -> map (\a -> (a,w)) as
 
 ladder :: [String] -> String -> String -> [String]
-ladder ws s t = path (search (graph ws) [(s,s)] []) s t
+ladder ws s t = path (searchFor (graph ws) t [(s,s)] []) s t
+
+searchFor :: Graph -> String -> Queue -> Queue -> Queue
+searchFor g _ [] done = done
+searchFor g t ((w,p):_) done | w==t = (w,p):done
+searchFor g t (edge:edges) done = searchFor g t (edges++(adjacents edge `minus` edges `minus` done)) (edge:done)
+    where 
+    adjacents :: Edge -> Queue
+    adjacents (w,_) = case lookup w g of
+        Nothing -> []
+        Just as -> map (\a -> (a,w)) as
+
