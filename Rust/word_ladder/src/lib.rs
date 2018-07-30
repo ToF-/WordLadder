@@ -1,34 +1,39 @@
+use std::collections::BTreeMap;
+use std::iter::FromIterator;
 
-struct Edge<'a> {
-    word: &'a str,
-    from: Option<&'a str>
+struct WordGraph<'a> {
+    map: BTreeMap<&'a str,Option<&'a str>>
+
 }
 
-impl <'a> Edge<'a> {
-    fn set_from(&mut self, word:&'a str) {
-        self.from = Some(word)
+impl<'a> WordGraph<'a> {
+    fn get(s:&str) -> Option<&'a str> {
+        return None
     }
 }
-    
 
-#[cfg(test)]
-mod edge_should {
+impl<'a> Iterator for WordGraph<'a> {
+    type Item = (&'a str, Option<&'a str>);
+    fn next(& mut self) -> Option<(&'a str, Option<&'a str>)> {
+       None
+    }
+}
+
+impl<'a> FromIterator<&'a str> for WordGraph<'a> {
+    fn from_iter<I:IntoIterator<Item = &'a str>>(iter : I) -> Self {
+        WordGraph { map:BTreeMap::new() }
+    }
+}
+
+mod word_graph_should {
     use super::*;
     
     #[test]
-    fn refer_to_a_word_and_a_node() {
-        let edge = Edge { word: "BAG", from:None };
+    fn contain_words() { 
+        let words = ["BAG","BOG","BAT","BUG","CAT","COG","COT","DOG","FOG","FIG","FAT","FOO","QUX"];
+        let graph = WordGraph::from_iter(words.iter());
 
-        assert_eq!(edge.word,"BAG");
-        assert_eq!(edge.from,None);
-    }
-    #[test]
-    fn change_its_from_key() {
-        let mut edge = Edge { word: "BAG", from:None };
-        edge.set_from("BUG");
-        assert_eq!(edge.from,Some("BUG"));
-
+        assert_eq!(2+2,4);
     }
 }
 
-// let words = ["BAG","BOG","BAT BUG CAT COG COT DOG FOG FIG FAT FOO QUX"];
