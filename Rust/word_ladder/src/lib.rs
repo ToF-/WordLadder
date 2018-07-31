@@ -7,7 +7,7 @@ struct WordGraph<'a> {
 }
 
 impl<'a> WordGraph<'a> {
-    fn get(s:&str) -> Option<&'a str> {
+    fn get(&self, s:&str) -> Option<(&'a str, Option<&str>)> {
         return None
     }
 }
@@ -29,11 +29,15 @@ mod word_graph_should {
     use super::*;
     
     #[test]
+    fn not_contain_a_word_when_empty() {
+        let graph = WordGraph { map:BTreeMap::new() };
+        assert_eq!(graph.get("BAG"), None)
+    }
     fn contain_words() { 
         let words = ["BAG","BOG","BAT","BUG","CAT","COG","COT","DOG","FOG","FIG","FAT","FOO","QUX"];
         let graph = WordGraph::from_iter(words.iter());
 
-        assert_eq!(2+2,4);
+        assert_eq!(graph.get("BAG"),Some(("BAG",None)))
     }
 }
 
