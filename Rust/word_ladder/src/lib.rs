@@ -33,7 +33,8 @@ mod word_graph_should {
         let graph = WordGraph { map:BTreeMap::new() };
         assert_eq!(graph.get("BAG"), None)
     }
-    fn contain_words() { 
+    #[test]
+    fn contain_words_when_filled_from_an_iterator() { 
         let words = ["BAG","BOG","BAT","BUG","CAT","COG","COT","DOG","FOG","FIG","FAT","FOO","QUX"];
         let graph = WordGraph::from_iter(words.iter());
 
