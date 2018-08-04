@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["ToF- <cthibaut@octo.com>"]
 
 [dependencies]
+galvanic-assert = "0.8.7"
+structopt = "0.2.10"
