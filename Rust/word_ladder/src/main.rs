@@ -34,7 +34,7 @@ fn main() {
         word_graph.add(word);
     }
 
-    let output = word_graph.ladder(opt.origin, opt.target);
+    let output = word_graph.ladder(&opt.origin, &opt.target);
     println!("{:?}", output);
 }
 

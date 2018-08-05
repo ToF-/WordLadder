@@ -17,22 +17,19 @@ pub struct WordGraph {
 
 impl WordGraph {
 
-    pub fn ladder<S: Into<String>>(&mut self, origin: S, target: S) -> Vec<String> {
-        let origin = origin.into();
-        let target = target.into();
-        assert!(self.words.contains_key(&origin));
-        assert!(self.words.contains_key(&target));
+    pub fn ladder(&mut self, origin: &str, target: &str) -> Vec<String> {
+        assert!(self.words.contains_key(origin));
+        assert!(self.words.contains_key(target));
 
-        self.breadth_search(origin.clone(), target.clone());
+        self.breadth_search(origin, target);
         self.path(target)
     }
 
-    pub fn add<S: Into<String>>(&mut self, s: S) {
-        self.words.insert(s.into(), None);
+    pub fn add(&mut self, s: &str) {
+        self.words.insert(String::from(s), None);
     }
 
-    fn is_adjacent<S: Into<String>>(s1: S, s2: S) -> bool {
-        let (s1, s2) = (s1.into(), s2.into());
+    fn is_adjacent(s1: &str, s2: &str) -> bool {
         if s1.len() != s2.len() {
             return false;
         }
@@ -43,85 +40,73 @@ impl WordGraph {
             .count() == 1
     }
 
-    fn adjacent_of<S: Into<String>>(&self, key: S) -> Vec<String> {
-        let key = key.into();
-        assert!(self.words.contains_key(&key));
+    fn adjacent_of(&self, key: &str) -> Vec<&str> {
 
         self.words
             .keys()
-            .filter(|word| WordGraph::is_adjacent(key.clone(), (*word).clone()))
-            .map(String::clone)
+            .filter(|word| WordGraph::is_adjacent(key, word))
+            .map(|s| &s[..])
             .collect()
     }
 
-    fn get<S: Into<String>>(&self, key: S) -> WordGraphResult {
-        let key = key.into();
+    fn get(&self, key: &str) -> WordGraphResult {
 
-        match self.words.get(&key) {
+        match self.words.get(key) {
             None => UnknownWord,
             Some(None) => NoParent,
-            Some(Some(parent)) if parent == &key => Origin,
+            Some(Some(parent)) if parent == key => Origin,
             Some(Some(parent)) => Parent(parent.clone()),
         }
     }
 
-    fn update_parent<S: Into<String>>(&mut self, key: S, parent: S) {
-        let key = key.into();
+    fn update_parent(&mut self, key: &str, parent: &str) {
         self.words
-            .entry(key)
-            .and_modify(|entry| *entry = Some(parent.into()));
+            .entry(String::from(key))
+            .and_modify(|entry| *entry = Some(String::from(parent)));
     }
 
-    fn path<S: Into<String>>(&self, target: S) -> Vec<String> {
-        let target = target.into();
-        assert!(self.words.contains_key(&target));
+    fn path(&self, target: &str) -> Vec<String> {
 
-        match self.get(target.clone()) {
-            Origin => vec![target],
-            Parent(parent) => [self.path(parent), vec![target]].concat(),
+        match self.get(target) {
+            Origin => vec![String::from(target)],
+            Parent(parent) => [self.path(&parent), vec![String::from(target)]].concat(),
             NoParent => unimplemented!("NoParent should not be on the path"),
             UnknownWord => unimplemented!("UknownWord should not be on the path"),
         }
     }
 
-    fn mark_origin<S: Into<String>>(&mut self, key: S) {
-        let key = key.into();
-        assert!(self.words.contains_key(&key));
+    fn mark_origin(&mut self, key: &str) {
 
         self.words
-            .entry(key.clone())
-            .and_modify(|entry| *entry = Some(key));
+            .entry(String::from(key))
+            .and_modify(|entry| *entry = Some(String::from(key)));
     }
 
-    fn breadth_search<S: Into<String>>(&mut self, origin: S, target: S) {
-        let origin = origin.into();
-        let target = target.into();
-        assert!(self.words.contains_key(&origin));
-        assert!(self.words.contains_key(&target));
+    fn breadth_search(&mut self, origin: &str, target: &str) {
 
-        self.mark_origin(origin.clone());
+        self.mark_origin(origin);
         let mut to_visit = VecDeque::new();
-        to_visit.push_front(origin.clone());
+        to_visit.push_front(String::from(origin));
 
         while let Some(current) = to_visit.pop_front() {
             if current == target {
-                assert_ne!(self.get(current), NoParent);
+                assert_ne!(self.get(&current), NoParent);
                 return
             }
 
-            for neighbour in self.adjacent_neighbours(current.clone()) {
-                self.update_parent(neighbour.clone(), current.clone());
-                to_visit.push_back(neighbour.clone());
+            for neighbour in self.adjacent_neighbours(&current) {
+                self.update_parent(&neighbour, &current);
+                to_visit.push_back(neighbour);
             }
         }
     }
 
-    fn adjacent_neighbours<S: Into<String>>(&self, node: S) -> Vec<String> {
-        let node = node.into();
+    fn adjacent_neighbours(&self, node: &str) -> Vec<String> {
 
-        self.adjacent_of(node.clone())
+        self.adjacent_of(node)
             .into_iter()
-            .filter(|node| self.get((*node).clone()) == NoParent)
+            .filter(|node| self.get(node) == NoParent)
+            .map(String::from)
             .collect()
     }
 }
