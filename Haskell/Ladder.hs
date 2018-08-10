@@ -1,36 +1,46 @@
 module Ladder
 where 
+import Prelude hiding (Word)
 
+type Word = String 
+type Step = (Word, Word)
+type Paths = [Step]
+
+adjacent :: Word -> Word -> Bool
 adjacent [] [] = False
 adjacent (c:cs) (d:ds) | c /= d = cs == ds
                        | otherwise = adjacent cs ds
 
-adjacents ws w = filter (adjacent w) ws
+adjacents :: [Word] -> Word -> [Word]
+adjacents words word = filter (adjacent word) words
 
-add (k,v) ps = case lookup k ps of
-    Nothing -> ps ++ [(k,v)]
-    Just _ -> ps
+add :: Step -> Paths -> Paths
+add step@(word,next) steps = case lookup word steps of
+    Nothing -> steps ++ [step]
+    Just _ -> steps
 
-path w ws = case lookup w ws of
+path :: Word -> Paths -> [Word]
+path word words = case lookup word words of
     Nothing -> []
-    Just n -> w : path n ws 
+    Just next -> word : path next words 
 
-search :: [String] -> String -> String -> [(String, String)]
-search ws t o = search' [(t,"")] []
+search :: [Word] -> Word -> Word -> Paths
+search words target origin = search' [(target,"")] []
     where 
+    search' :: [Step] -> Paths -> Paths
     search' [] _ = []
-    search' ((k,v):vs) rs | k == o = ((k,v):rs)
-    search' ((k,v):vs) rs = search' vs' rs'
+    search' (step@(word,next):toVisit) result | word == origin = step : result
+    search' (step@(word,next):toVisit) result = search' toVisit' result'
         where 
-        vs' = foldl (flip add) vs (map (\n->(n,k)) ns)
-        ns  = filter (\w -> lookup w rs' == Nothing) (adjacents ws k)
-        rs' = (k,v):rs
+        toVisit' = foldl (flip add) toVisit (map (\neighbor ->(neighbor,word)) neighbors)
+        neighbors  = filter (\s -> lookup s result' == Nothing) (adjacents words word)
+        result' = step:result
 
-ladder :: [String] -> String -> String -> [String]
-ladder ws o t = path o (search ws t o)
+ladder :: [Word] -> Word -> Word -> [Word]
+ladder words o t = path o (search words t o)
 
-ladderFromFile :: String -> String -> String -> IO [String]
+ladderFromFile :: String -> Word -> Word -> IO [Word]
 ladderFromFile f o t = fmap process (readFile f)
     where 
-    process :: String -> [String]
+    process :: Word -> [Word]
     process s = ladder (filter (\w -> length w == length o) (lines s)) o t
