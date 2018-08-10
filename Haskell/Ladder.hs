@@ -8,5 +8,5 @@ adjacent (c:cs) (d:ds) | c /= d = cs == ds
 adjacents ws w = filter (adjacent w) ws
 
 add (k,v) ps = case lookup k ps of
-    Nothing -> (k,v):ps
+    Nothing -> ps ++ [(k,v)]
     Just _ -> ps
