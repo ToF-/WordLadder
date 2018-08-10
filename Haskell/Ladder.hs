@@ -1,4 +1,5 @@
 module Ladder
 where 
 
-adjacent _ _ = False
+adjacent [] [] = False
+adjacent _ _ = True
