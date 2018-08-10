@@ -44,3 +44,13 @@ main = hspec $ do
         it "given a list of pairs of words, walk the pairs until the word with no parent" $ do
         let ws = [("FOO","BAR"),("BAR","QUX"),("QUX","")]
         path "FOO" ws `shouldBe` ["FOO","BAR","QUX"]
+
+    describe "search" $ do
+        describe "given a list of words, a target and an origin" $ do
+            let ws = words "BAG BOG CAT COT COG DOG FOG QUX"
+            it "collected visited edges until origin is found" $ do
+                 search ws "CAT" "CAT" `shouldBe` [("CAT","")]
+
+            it "gives an empty list if no words leads to origin" $ do
+                 search ws "CAT" "QUX" `shouldBe` []
+                 search ws "BAG" "CAT" `shouldBe` [("CAT","COT"),("COT","COG"),("FOG","BOG"),("DOG","BOG"),("COG","BOG"),("BOG","BAG"),("BAG","")]

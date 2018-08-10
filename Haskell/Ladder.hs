@@ -14,3 +14,14 @@ add (k,v) ps = case lookup k ps of
 path w ws = case lookup w ws of
     Nothing -> []
     Just n -> w : path n ws 
+
+search :: [String] -> String -> String -> [(String, String)]
+search ws t o = search' [(t,"")] []
+    where 
+    search' [] _ = []
+    search' ((k,v):vs) rs | k == o = ((k,v):rs)
+    search' ((k,v):vs) rs = search' vs' rs'
+        where 
+        vs' = foldl (flip add) vs (map (\n->(n,k)) ns)
+        ns  = filter (\w -> lookup w rs' == Nothing) (adjacents ws k)
+        rs' = (k,v):rs
