@@ -54,3 +54,17 @@ main = hspec $ do
             it "gives an empty list if no words leads to origin" $ do
                  search ws "CAT" "QUX" `shouldBe` []
                  search ws "BAG" "CAT" `shouldBe` [("CAT","COT"),("COT","COG"),("FOG","BOG"),("DOG","BOG"),("COG","BOG"),("BOG","BAG"),("BAG","")]
+
+    describe "ladder" $ do
+        describe "given a list of words, an origin and a target" $ do
+            let ws = words "BAG BAT BOG CAT COT COG DOG FOG QUX"
+            it "finds the ladder" $ do
+                ladder ws "CAT" "BAG" `shouldBe` words "CAT BAT BAG"
+                ladder ws "DOG" "CAT" `shouldBe` ["DOG","COG","COT","CAT"]
+
+            it "finds nothing if the origin is not in the list" $ do
+                ladder ws "FAT" "BAG" `shouldBe` []
+
+            it "finds nothing if the target is connect to the origin" $ do
+                ladder ws "CAT" "QUX" `shouldBe` []
+            

@@ -25,3 +25,6 @@ search ws t o = search' [(t,"")] []
         vs' = foldl (flip add) vs (map (\n->(n,k)) ns)
         ns  = filter (\w -> lookup w rs' == Nothing) (adjacents ws k)
         rs' = (k,v):rs
+
+ladder :: [String] -> String -> String -> [String]
+ladder ws o t = path o (search ws t o)
