@@ -2,4 +2,4 @@ module Ladder
 where 
 
 adjacent [] [] = False
-adjacent s t = s /= t
+adjacent (c:cs) (d:ds) = c /= d && cs == ds
