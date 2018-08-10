@@ -15,8 +15,6 @@ main = hspec $ do
         it "is true when words differ by their first letter" $ do
             "DO" `adjacent` "GO" `shouldBe` True
 
-        it "is true when words differ by only their first letter" $ do
-            "DOG" `adjacent` "GOT" `shouldBe` False
-
         it "is true when words differ by only one letter" $ do
             "DOG" `adjacent` "DIG" `shouldBe` True
+            "DOG" `adjacent` "GOT" `shouldBe` False
