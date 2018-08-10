@@ -39,3 +39,8 @@ main = hspec $ do
                     (add ("FOO","BAR") [])
             head q `shouldBe` ("FOO","BAR")
             head (tail q) `shouldBe` ("BAZ","QUX")
+
+    describe "path" $ do
+        it "given a list of pairs of words, walk the pairs until the word with no parent" $ do
+        let ws = [("FOO","BAR"),("BAR","QUX"),("QUX","")]
+        path "FOO" ws `shouldBe` ["FOO","BAR","QUX"]

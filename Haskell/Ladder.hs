@@ -10,3 +10,7 @@ adjacents ws w = filter (adjacent w) ws
 add (k,v) ps = case lookup k ps of
     Nothing -> ps ++ [(k,v)]
     Just _ -> ps
+
+path w ws = case lookup w ws of
+    Nothing -> []
+    Just n -> w : path n ws 
