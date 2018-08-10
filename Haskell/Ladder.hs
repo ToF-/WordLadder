@@ -28,3 +28,9 @@ search ws t o = search' [(t,"")] []
 
 ladder :: [String] -> String -> String -> [String]
 ladder ws o t = path o (search ws t o)
+
+ladderFromFile :: String -> String -> String -> IO [String]
+ladderFromFile f o t = fmap process (readFile f)
+    where 
+    process :: String -> [String]
+    process s = ladder (filter (\w -> length w == length o) (lines s)) o t
