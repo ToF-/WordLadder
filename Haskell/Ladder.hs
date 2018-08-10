@@ -2,4 +2,4 @@ module Ladder
 where 
 
 adjacent [] [] = False
-adjacent _ _ = True
+adjacent s t = s /= t

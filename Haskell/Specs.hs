@@ -8,3 +8,6 @@ main = hspec $ do
 
         it "is true with distinct one letter words" $ do
             "A" `adjacent` "B" `shouldBe` True  
+
+        it "is false with identical one letter words" $ do
+            "A" `adjacent` "A" `shouldBe` False
