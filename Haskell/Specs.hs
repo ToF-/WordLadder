@@ -28,3 +28,6 @@ main = hspec $ do
         it "given a queue and a pair, returns a queue containing the pair" $ do
             let q = add ("FOO","BAR") []
             lookup "FOO" q `shouldBe` Just "BAR"
+        it "adds a pair only if it not already in the queue" $ do
+            let q = add ("FOO","QUX") (add ("FOO","BAR") [])
+            lookup "FOO" q `shouldBe` Just "BAR"
