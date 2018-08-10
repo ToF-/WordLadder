@@ -18,3 +18,8 @@ main = hspec $ do
         it "is true when words differ by only one letter" $ do
             "DOG" `adjacent` "DIG" `shouldBe` True
             "DOG" `adjacent` "GOT" `shouldBe` False
+
+    describe "dictionary" $ do
+        it "given a list, finds the adjacent words of a word" $ do
+            let ws = words "CAT COT COG DOG FOG QUX"
+            adjacents ws "DOG" `shouldBe` ["COG","FOG"]
