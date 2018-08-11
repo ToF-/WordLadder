@@ -16,31 +16,34 @@ adjacents words word = filter (adjacent word) words
 
 add :: Step -> Paths -> Paths
 add step@(word,next) steps = case lookup word steps of
+    Just already -> steps
     Nothing -> steps ++ [step]
-    Just _ -> steps
 
 path :: Word -> Paths -> [Word]
-path word words = case lookup word words of
+path word steps = case lookup word steps of
     Nothing -> []
-    Just next -> word : path next words 
+    Just next -> word : path next steps 
 
 search :: [Word] -> Word -> Word -> Paths
-search words target origin = search' [(target,"")] []
+search words target origin = breadth_search [(target,"")] []
     where 
-    search' :: [Step] -> Paths -> Paths
-    search' [] _ = []
-    search' (step@(word,next):toVisit) result | word == origin = step : result
-    search' (step@(word,next):toVisit) result = search' toVisit' result'
+    breadth_search :: [Step] -> Paths -> Paths
+    breadth_search [] _ = []
+    breadth_search (step@(word,_):to_visit) paths | word == origin = step : paths
+    breadth_search (step@(word,_):to_visit) paths = breadth_search to_visit' paths'
         where 
-        toVisit' = foldl (flip add) toVisit (map (\neighbor ->(neighbor,word)) neighbors)
-        neighbors  = filter (\s -> lookup s result' == Nothing) (adjacents words word)
-        result' = step:result
+        to_visit' = foldl (flip add) to_visit neighbors
+        neighbors  = map (link_to word) $ filter is_new $ adjacents words word
+        link_to = flip (,)
+        is_new s = lookup s paths' == Nothing
+        paths' = step:paths
 
 ladder :: [Word] -> Word -> Word -> [Word]
-ladder words o t = path o (search words t o)
+ladder words origin target = path origin  $ search words target origin
 
 ladderFromFile :: String -> Word -> Word -> IO [Word]
-ladderFromFile f o t = fmap process (readFile f)
+ladderFromFile file_name origin target = fmap process $ readFile file_name
     where 
-    process :: Word -> [Word]
-    process s = ladder (filter (\w -> length w == length o) (lines s)) o t
+    process :: String -> [Word]
+    process file_contents = ladder ((filter (same length origin)) (lines file_contents)) origin target
+    same f a b = f a == f b
